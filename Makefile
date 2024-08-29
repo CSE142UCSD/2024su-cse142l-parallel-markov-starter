@@ -47,29 +47,29 @@ $(BUILD)%.so: $(BUILD)%.cpp
 	mkdir -p $(BUILD) 
 	cp *.hpp $(BUILD)
 	cp *.h   $(BUILD)
-	$(COMPILER)  -DHAVE_LINUX_PERF_EVENT_H $(MICROBENCH_OPTIMIZE) $(LIBS) -rdynamic -fPIC -shared -o $(BUILD)$*.so $(BUILD)$*.cpp
-#	$(COMPILER) $(MICROBENCH_OPTIMIZE) $(LIBS) -c -fPIC -o $(BUILD)$*.o $(BUILD)$*.cpp
+	$(COMPILER)  -DHAVE_LINUX_PERF_EVENT_H $(MICROBENCH_OPTIMIZE) $(OPENMP_OPTS) $(OPENMP_LIBS) $(LIBS) -rdynamic -fPIC -shared -o $(BUILD)$*.so $(BUILD)$*.cpp
+#	$(COMPILER) $(MICROBENCH_OPTIMIZE) $(LIBS) $(OPENMP_OPTS) $(OPENMP_LIBS) -c -fPIC -o $(BUILD)$*.o $(BUILD)$*.cpp
 
 $(BUILD)%.cpp: %.cpp
 	cp $< $(BUILD)
 	cp *.hpp $(BUILD)
 
 markov.exe: $(BUILD)markov_main.o  $(BUILD)markov.o $(BUILD)perfstats.o
-	$(COMPILER) $(markov_OPTIMIZE) $(MICROBENCH_OPTIMIZE) $(BUILD)markov_main.o  $(BUILD)perfstats.o $(BUILD)markov.o -o markov.exe
+	$(COMPILER) $(markov_OPTIMIZE) $(OPENMP_OPTS) $(OPENMP_LIBS) $(MICROBENCH_OPTIMIZE) $(BUILD)markov_main.o  $(BUILD)perfstats.o $(BUILD)markov.o -o markov.exe
 
 $(BUILD)run_tests.o : OPTIMIZE=-O3
 
 $(BUILD)%.o: %.cpp
 	mkdir -p $(BUILD) 
 	cp  $< $(BUILD)$<
-	$(COMPILER)  -DHAVE_LINUX_PERF_EVENT_H $(MICROBENCH_OPTIMIZE) $(LIBS) -o $(BUILD)$*.o -c $(BUILD)$*.cpp
+	$(COMPILER)  -DHAVE_LINUX_PERF_EVENT_H $(OPENMP_OPTS) $(OPENMP_LIBS) $(MICROBENCH_OPTIMIZE) $(LIBS) -o $(BUILD)$*.o -c $(BUILD)$*.cpp
 
 $(BUILD)markov.o : OPTIMIZE=$(markov_OPTIMIZE)
 $(BUILD)markov.s : OPTIMIZE=$(markov_OPTIMIZE)
 $(BUILD)markov_main.o : OPTIMIZE=$(markov_OPTIMIZE)
 
 fiddle.exe:  $(BUILD)fiddle.o $(FIDDLE_OBJS) $(BUILD)perfstats.o
-	$(COMPILER) $(MICROBENCH_OPTIMIZE)  -DHAVE_LINUX_PERF_EVENT_H $(BUILD)fiddle.o $(BUILD)perfstats.o $(FIDDLE_OBJS) $(LIBS) -o fiddle.exe
+	$(COMPILER) $(MICROBENCH_OPTIMIZE) $(OPENMP_OPTS) $(OPENMP_LIBS) -DHAVE_LINUX_PERF_EVENT_H $(BUILD)fiddle.o $(BUILD)perfstats.o $(FIDDLE_OBJS) $(LIBS) -o fiddle.exe
 #fiddle.exe: EXTRA_LDFLAGS=-pg
 #$(BUILD)fiddle.o : OPTIMIZE=-O3 -pg
 
