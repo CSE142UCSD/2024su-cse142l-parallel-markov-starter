@@ -1,4 +1,5 @@
 SHELL=/bin/bash
+OPENMP=yes
 .SUFFIXES:
 default:
 
@@ -15,7 +16,14 @@ BUILD=build/
 OPTIMIZE+=-march=x86-64
 COMPILER=g++-9
 include config.make
-
+OPENMP?=no
+ifeq ($(OPENMP),yes)
+OPENMP_OPTS=-fopenmp
+OPENMP_LIBS=-lgomp
+else
+OPENMP_OPTS=
+OPENMP_LIBS=
+endif
 .PHONY: autograde
 autograde: markov.exe 
 	./markov.exe -M 4000 -o bench.csv -scale 8192 -days 128 -i 1 -f markov_reference_c markov_solution_c
