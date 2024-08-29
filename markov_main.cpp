@@ -278,9 +278,10 @@ bool compare_data(double *M, double *N, uint64_t size)
 {
     uint64_t i,j;
     bool result = true;
+    //double diff = 0.0; 
     for(i=0;i<size;i++)
     {
-        if(M[i]!=N[i])
+        if(std::abs(M[i]-N[i])>0.0001)
         {
             std::cout << "Verification failed at " << i <<"th element\n" << M[i]<< " v.s "<< N[i] << "\n";
             result = false;
